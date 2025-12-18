@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test n8n Webhook</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #1a1a1a;
+      color: #fff;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      cursor: pointer;
+      background: #9333EA;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #7C3AED;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 20px;
+      background: #2a2a2a;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .success {
+      color: #10b981;
+    }
+    .error {
+      color: #ef4444;
+    }
+    input {
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      max-width: 600px;
+      background: #2a2a2a;
+      border: 1px solid #9333EA;
+      color: white;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧪 Test n8n Webhook</h1>
+  
+  <div>
+    <label>Webhook URL:</label>
+    <input 
+      type="text" 
+      id="webhookUrl" 
+      value="https://kiluan318.app.n8n.cloud/webhook/012d5660-0c40-485f-8add-4f1d5329b9a6/chat"
+      placeholder="Enter webhook URL"
+    />
+  </div>
+
+  <div>
+    <label>Test Message:</label>
+    <input 
+      type="text" 
+      id="testMessage" 
+      value="Xin chào"
+      placeholder="Enter test message"
+    />
+  </div>
+
+  <div>
+    <button onclick="testWebhook()">🚀 Test Webhook</button>
+    <button onclick="testWithCURL()">📋 Show cURL Command</button>
+    <button onclick="clearResult()">🗑️ Clear</button>
+  </div>
+
+  <div id="result"></div>
+
+  <script>
+    const resultDiv = document.getElementById('result');
+
+    function log(message, isError = false) {
+      const timestamp = new Date().toLocaleTimeString();
+      const className = isError ? 'error' : 'success';
+      resultDiv.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+    }
+
+    function clearResult() {
+      resultDiv.innerHTML = '';
+    }
+
+    async function testWebhook() {
+      clearResult();
+      const url = document.getElementById('webhookUrl').value;
+      const message = document.getElementById('testMessage').value;
+
+      log('🔍 Testing webhook: ' + url);
+      log('📨 Message: ' + message);
+      log('⏳ Sending request...');
+
+      // Test 1: Simple POST
+      try {
+        log('\n📡 Test 1: Simple POST request');
+        const response1 = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            action: 'sendMessage',
+            sessionId: 'test-session-123',
+            chatInput: message
+          })
+        });
+
+        log('Status: ' + response1.status + ' ' + response1.statusText);
+        const data1 = await response1.text();
+        log('Response: ' + data1);
+
+        if (response1.ok) {
+          log('✅ Test 1 PASSED!', false);
+        } else {
+          log('❌ Test 1 FAILED: ' + response1.status, true);
+        }
+      } catch (error) {
+        log('❌ Test 1 ERROR: ' + error.message, true);
+        log('Error details: ' + JSON.stringify(error, null, 2), true);
+      }
+
+      // Test 2: With session
+      try {
+        log('\n📡 Test 2: With sessionId metadata');
+        const response2 = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            sessionId: 'test-session-456',
+            message: message,
+            metadata: {
+              sessionId: 'test-session-456'
+            }
+          })
+        });
+
+        log('Status: ' + response2.status + ' ' + response2.statusText);
+        const data2 = await response2.text();
+        log('Response: ' + data2);
+
+        if (response2.ok) {
+          log('✅ Test 2 PASSED!', false);
+        } else {
+          log('❌ Test 2 FAILED: ' + response2.status, true);
+        }
+      } catch (error) {
+        log('❌ Test 2 ERROR: ' + error.message, true);
+      }
+
+      // Test 3: Direct message
+      try {
+        log('\n📡 Test 3: Direct message format');
+        const response3 = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            chatInput: message
+          })
+        });
+
+        log('Status: ' + response3.status + ' ' + response3.statusText);
+        const data3 = await response3.text();
+        log('Response: ' + data3);
+
+        if (response3.ok) {
+          log('✅ Test 3 PASSED!', false);
+        } else {
+          log('❌ Test 3 FAILED: ' + response3.status, true);
+        }
+      } catch (error) {
+        log('❌ Test 3 ERROR: ' + error.message, true);
+      }
+
+      // Test 4: GET request to check if endpoint exists
+      try {
+        log('\n📡 Test 4: GET request (check endpoint)');
+        const response4 = await fetch(url, {
+          method: 'GET',
+        });
+
+        log('Status: ' + response4.status + ' ' + response4.statusText);
+        const data4 = await response4.text();
+        log('Response: ' + data4);
+
+        if (response4.ok || response4.status === 405) {
+          log('✅ Endpoint exists (even if GET not allowed)', false);
+        } else if (response4.status === 404) {
+          log('❌ Endpoint NOT FOUND - Check workflow URL!', true);
+        }
+      } catch (error) {
+        log('❌ Test 4 ERROR: ' + error.message, true);
+      }
+
+      log('\n\n✅ Testing complete!');
+      log('📊 Check results above to see which format works.');
+    }
+
+    function testWithCURL() {
+      clearResult();
+      const url = document.getElementById('webhookUrl').value;
+      const message = document.getElementById('testMessage').value;
+
+      log('📋 cURL Commands to test in terminal:\n');
+      
+      log('# Test 1: Simple POST');
+      log(`curl -X POST "${url}" \\
+  -H "Content-Type: application/json" \\
+  -d '{"action":"sendMessage","sessionId":"test-123","chatInput":"${message}"}'`);
+      
+      log('\n# Test 2: With metadata');
+      log(`curl -X POST "${url}" \\
+  -H "Content-Type: application/json" \\
+  -d '{"sessionId":"test-123","message":"${message}","metadata":{"sessionId":"test-123"}}'`);
+      
+      log('\n# Test 3: Direct message');
+      log(`curl -X POST "${url}" \\
+  -H "Content-Type: application/json" \\
+  -d '{"chatInput":"${message}"}'`);
+
+      log('\n# Test 4: Check endpoint exists');
+      log(`curl -I "${url}"`);
+
+      log('\n\n💡 Copy any command above and run in your terminal!');
+    }
+
+    // Auto-run on load
+    window.onload = function() {
+      log('🎯 Ready to test! Click "Test Webhook" button.');
+      log('📝 You can modify the URL and message above.\n');
+    };
+  </script>
+</body>
+</html>
