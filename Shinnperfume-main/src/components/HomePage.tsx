@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
-import forHerImage from '/images/102b8b40e4737ee23214e3dffb812b7dae2ca12d.png';
-import forHimImage from '/images/8d51994707cf2c60f30ea55cfd37b4806e617a7e.png';
+import forHerImage from '/images/for-her.png';
+import forHimImage from '/images/for-him.png';
 
 interface HomePageProps {
   onNavigate: (page: 'her' | 'him' | 'about' | 'contact' | 'admin' | 'chattest' | 'n8ntest') => void;
