@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
-import forHerImage from 'figma:asset/102b8b40e4737ee23214e3dffb812b7dae2ca12d.png';
-import forHimImage from 'figma:asset/8d51994707cf2c60f30ea55cfd37b4806e617a7e.png';
+import forHerImage from '../assets/102b8b40e4737ee23214e3dffb812b7dae2ca12d.png';
+import forHimImage from '../assets/8d51994707cf2c60f30ea55cfd37b4806e617a7e.png';
 
 interface HomePageProps {
   onNavigate: (page: 'her' | 'him' | 'about' | 'contact' | 'admin' | 'chattest' | 'n8ntest') => void;
