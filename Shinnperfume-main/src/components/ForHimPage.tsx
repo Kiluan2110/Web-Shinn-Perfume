@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronUp, ChevronDown, Search } from 'lucide-react';
-import { ImageWithFallback } from './figma/ImageWithFallback';
+import { ImageWithFallback } from './fallback/ImageWithFallback';
 import { useState, useEffect } from 'react';
 import { usePerfumes } from '../contexts/PerfumeContext';
 import { CustomChatWidget } from './CustomChatWidget';

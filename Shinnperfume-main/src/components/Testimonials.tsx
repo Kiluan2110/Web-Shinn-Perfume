@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { Star } from 'lucide-react';
-import { ImageWithFallback } from './figma/ImageWithFallback';
+import { ImageWithFallback } from './fallback/ImageWithFallback';
 
 const testimonials = [
   {

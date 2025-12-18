@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { ShoppingBag, Heart } from 'lucide-react';
-import { ImageWithFallback } from './figma/ImageWithFallback';
+import { ImageWithFallback } from './fallback/ImageWithFallback';
 import { useState } from 'react';
 
 interface Product {
