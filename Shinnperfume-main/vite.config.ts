@@ -5,6 +5,7 @@
 
   export default defineConfig({
     base: '/',
+    publicDir: 'public',
     plugins: [react()],
     resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
