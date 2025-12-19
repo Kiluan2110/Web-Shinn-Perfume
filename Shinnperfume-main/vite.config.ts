@@ -56,7 +56,7 @@
     },
     build: {
   target: 'esnext',
-  outDir: 'dist',  // Đổi từ 'build' thành 'dist'
+  outDir: 'dist',
 },
     server: {
       port: 3000,
